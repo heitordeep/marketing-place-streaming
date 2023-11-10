@@ -1,0 +1,46 @@
+version: '3'
+
+services:
+  spark-master:
+    image: bitnami/spark:latest
+    container_name: spark-master
+    command: bin/spark-class org.apache.spark.deploy.master.Master
+    ports:
+      - "7077:7077"
+      - "8080:8080"
+    environment:
+      - SPARK_MASTER_HOST=spark-master
+    volumes:
+      - ./src/:/opt/spark/app/src
+      - ./input/:/opt/spark/app/input
+      - ./checkpoint:/opt/spark/app/checkpoint
+
+  spark-worker-1:
+    image: bitnami/spark:latest
+    container_name: spark-worker-1
+    command: bin/spark-class org.apache.spark.deploy.worker.Worker spark://spark-master:7077
+    environment:
+      - SPARK_MODE=worker
+      - SPARK_WORKER_CORES=2
+      - SPARK_WORKER_MEMORY=2g
+      - SPARK_MASTER_URL=spark://spark-master:7077    
+    depends_on:
+      - spark-master
+
+  cassandra-node-1:
+    image: cassandra:latest
+    container_name: cassandra-node-1
+    environment:
+      - CASSANDRA_CLUSTER_NAME=mycluster
+      - CASSANDRA_SEEDS=cassandra-node-1,cassandra-node-2
+    ports:
+      - "9042:9042"
+      - "7000:7000"
+      - "7199:7199"
+
+  cassandra-node-2:
+    image: cassandra:latest
+    container_name: cassandra-node-2
+    environment:
+      - CASSANDRA_CLUSTER_NAME=mycluster
+      - CASSANDRA_SEEDS=cassandra-node-1,cassandra-node-2

@@ -1,0 +1,21 @@
+{
+  "txt_detl_idt_pedi_pgto": "GHJ2619225280159",
+  "cod_idef_clie": "customer-store",
+  "dat_hor_tran": "2023-07-26T19:22:05.262Z",
+  "list_item_pedi": [{
+    "nom_item": "Sabonete Dove Original",
+    "cod_ofrt_ineo_requ": "62f69ed096bd64d36672f00e",
+    "vlr_oril": 6.15,
+    "vlr_prod": 5.59,
+    "vlr_prod_ofrt_desc": 0.0,
+    "qtd_item_pedi": 1,
+    "idt_venr": "hxL9bHz7OO",
+    "nom_venr": "Magazine Luiza",
+    "idt_vrne_venr": "220978300_magazineluiza",
+    "cod_vrne_prod": "MKU-v70eo1eSiyCa8"
+  }],
+  "list_envo": [],
+  "stat_pgto": "PRE-ORDER",
+  "stat_pedi": "PRE-ORDER",
+  "dat_atui": "2023-07-26T19:22:05.262Z"
+}

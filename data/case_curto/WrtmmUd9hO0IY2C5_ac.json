@@ -1,0 +1,49 @@
+{
+  "txt_detl_idt_pedi_pgto": "WrtmmUd9hO0IY2C5",
+  "cod_idef_clie": "customer-store",
+  "dat_hor_tran": "2022-07-14T00:20:27.107Z",
+  "list_item_pedi": [{
+      "nom_item": "Rock in Rio 2022 - 08/09 - Setor Gramado",
+      "cod_ofrt_ineo_requ": "62cdf4fbe3cc89ac64deb7cb",
+      "vlr_oril": 468.75,
+      "vlr_prod": 468.75,
+      "vlr_prod_ofrt_desc": 0.0,
+      "qtd_item_pedi": 1,
+      "idt_venr": "V3mGU4wV0C",
+      "nom_venr": "Easylive",
+      "idt_vrne_venr": "36539",
+      "cod_vrne_prod": "MKU-6G1qsyBPFERB8"
+    },
+    {
+      "nom_item": "Rock in Rio 2022 - 02/09 - Setor Gramado",
+      "cod_ofrt_ineo_requ": "62cdf4fbe3cc89ac64deb7c8",
+      "vlr_oril": 468.75,
+      "vlr_prod": 468.75,
+      "vlr_prod_ofrt_desc": 0.0,
+      "nom_prod_orig": "Rock in Rio 2022 - 02/09 - Setor Gramado",
+      "txt_plae_otmz_url_prod": "rock-in-rio-2022-02-09-setor-gramado",
+      "qtd_item_pedi": 1,
+      "idt_venr": "V3mGU4wV0C",
+      "nom_venr": "Easylive",
+      "idt_vrne_venr": "36536",
+      "cod_vrne_prod": "MKU-eHeChrSd97hs6"
+    },
+    {
+      "nom_item": "Rock in Rio 2022 - 09/09 - Setor Gramado",
+      "cod_ofrt_ineo_requ": "62cdf4fbe3cc89ac64deb7cc",
+      "vlr_oril": 468.75,
+      "vlr_prod": 468.75,
+      "vlr_prod_ofrt_desc": 0.0,
+      "qtd_item_pedi": 1,
+      "idt_venr": "V3mGU4wV0C",
+      "nom_venr": "Easylive",
+      "idt_vrne_venr": "36540",
+      "cod_vrne_prod": "MKU-pmGBqkZhqsmgy"
+    }
+  ],
+
+  "list_envo": [],
+  "stat_pgto": "PAID",
+  "stat_pedi": "PAID",
+  "dat_atui": "2022-07-14T00:20:31.817Z"
+}

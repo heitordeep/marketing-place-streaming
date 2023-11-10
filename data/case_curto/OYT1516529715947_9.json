@@ -1,0 +1,21 @@
+{
+    "txt_detl_idt_pedi_pgto": "OYT1516529715947",
+    "cod_idef_clie": "customer-store",
+    "dat_hor_tran": "2023-09-15T16:52:49.375Z",
+    "list_item_pedi": [{
+        "nom_item": "Copo com Canudo Stanley Quencher 2.0 887ML Branco Cream",
+        "cod_ofrt_ineo_requ": "6459e9ba7028520010374e10",
+        "vlr_oril": 285.0,
+        "vlr_prod": 228.0,
+        "vlr_prod_ofrt_desc": 0.0,
+        "qtd_item_pedi": 1,
+        "idt_venr": "8dJAULm6us",
+        "nom_venr": "Top Store",
+        "idt_vrne_venr": "4617245",
+        "cod_vrne_prod": "MKU-s6p435iTm8ylT"
+    }],
+    "list_envo": [],
+    "stat_pgto": "PRE-ORDER",
+    "stat_pedi": "PRE-ORDER",
+    "dat_atui": "2023-09-15T16:52:49.375Z"
+}

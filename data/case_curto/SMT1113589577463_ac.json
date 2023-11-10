@@ -1,0 +1,34 @@
+{
+    "txt_detl_idt_pedi_pgto": "SMT1113589577463",
+    "cod_idef_clie": "customer-store",
+    "dat_hor_tran": "2023-05-11T13:58:33.181Z",
+    "list_item_pedi": [{
+            "nom_item": "Combo Natura Ekos",
+            "cod_ofrt_ineo_requ": "64555c61d3a78500119f6518",
+            "vlr_oril": 106.5,
+            "vlr_prod": 59.9,
+            "vlr_prod_ofrt_desc": 0.0,
+            "qtd_item_pedi": 1,
+            "idt_venr": "8dJAULm6us",
+            "nom_venr": "Top Store",
+            "idt_vrne_venr": "4646195",
+            "cod_vrne_prod": "MKU-9iSYhmyGMPHpM"
+        },
+        {
+            "nom_item": "Livro - Mindset",
+            "cod_ofrt_ineo_requ": "626c239951dd578ff254c226",
+            "vlr_oril": 69.9,
+            "vlr_prod": 44.5,
+            "vlr_prod_ofrt_desc": 0.0,
+            "qtd_item_pedi": 1,
+            "idt_venr": "hxL9bHz7OO",
+            "nom_venr": "Magazine Luiza",
+            "idt_vrne_venr": "222419500_magazineluiza",
+            "cod_vrne_prod": "MKU-tkv6tbv5AAquh"
+        }
+    ],
+    "list_envo": [],
+    "stat_pgto": "PRE-ORDER",
+    "stat_pedi": "IN-PROCESSING",
+    "dat_atui": "2023-05-11T13:58:35.124Z"
+}
