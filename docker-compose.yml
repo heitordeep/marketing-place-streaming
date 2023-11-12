@@ -12,7 +12,6 @@ services:
       - SPARK_MASTER_HOST=spark-master
     volumes:
       - ./src/:/opt/spark/app/src
-      - ./input/:/opt/spark/app/input
       - ./checkpoint:/opt/spark/app/checkpoint
 
   spark-worker-1:
@@ -27,20 +26,23 @@ services:
     depends_on:
       - spark-master
 
-  cassandra-node-1:
-    image: cassandra:latest
-    container_name: cassandra-node-1
-    environment:
-      - CASSANDRA_CLUSTER_NAME=mycluster
-      - CASSANDRA_SEEDS=cassandra-node-1,cassandra-node-2
+  localstack:
+    container_name: simulator-aws
+    image: localstack/localstack
+    command: /bin/sh /tmp/itau-shop/create-bucket.sh
     ports:
-      - "9042:9042"
-      - "7000:7000"
-      - "7199:7199"
-
-  cassandra-node-2:
-    image: cassandra:latest
-    container_name: cassandra-node-2
+      - "4566:4566"            # LocalStack Gateways
+      - "4510-4559:4510-4559"  # external services port range
     environment:
-      - CASSANDRA_CLUSTER_NAME=mycluster
-      - CASSANDRA_SEEDS=cassandra-node-1,cassandra-node-2
+      - DEBUG=${DEBUG-}
+      - DOCKER_HOST=unix:///var/run/docker.sock
+      - DEFAULT_REGION=eu-west-1
+      - AWS_ACCESS_KEY_ID=dummy
+      - AWS_SECRET_ACCESS_KEY=dummy
+      - SERVICES=s3
+    volumes:
+      - "${LOCALSTACK_VOLUME_DIR:-./volume}:/var/lib/localstack"
+      - "/var/run/docker.sock:/var/run/docker.sock"
+      - ./input/:/tmp/itau-shop/input/
+      - ./output/:/tmp/itau-shop/output/
+      - ./create-bucket.sh:/tmp/itau-shop/create-bucket.sh

@@ -1,0 +1,21 @@
+{
+  "txt_detl_idt_pedi_pgto": "8rQeIH1kGo6bV9c5",
+  "cod_idef_clie": "customer-store",
+  "dat_hor_tran": "2022-07-16T06:11:38.489Z",
+  "list_item_pedi": [{
+    "nom_item": "Rock in Rio 2022 - 03/09 - Setor Gramado",
+    "cod_ofrt_ineo_requ": "62cdf4fbe3cc89ac64deb7c9",
+    "vlr_oril": 468.75,
+    "vlr_prod": 468.75,
+    "vlr_prod_ofrt_desc": 0.0,
+    "qtd_item_pedi": 1,
+    "idt_venr": "V3mGU4wV0C",
+    "nom_venr": "Easylive",
+    "idt_vrne_venr": "36537",
+    "cod_vrne_prod": "MKU-89HZXeJq6vudQ"
+  }],
+  "list_envo": [],
+  "stat_pgto": "PRE-ORDER",
+  "stat_pedi": "PRE-ORDER",
+  "dat_atui": "2022-07-16T06:11:38.511Z"
+}

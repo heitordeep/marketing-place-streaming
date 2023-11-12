@@ -1,0 +1,9 @@
+awslocal s3api create-bucket --bucket itau-shop
+
+
+spark-shell \
+  --conf spark.hadoop.fs.s3a.endpoint=http://localstack:4566 \
+  --conf spark.hadoop.fs.s3a.impl=org.apache.hadoop.fs.s3a.S3AFileSystem \
+  --conf spark.hadoop.fs.s3a.access.key=dummy \
+  --conf spark.hadoop.fs.s3a.secret.key=dummy \
+  --conf spark.hadoop.fs.s3a.path.style.access=true

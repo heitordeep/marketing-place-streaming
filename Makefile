@@ -13,16 +13,10 @@ down: ## Delete containers
 exec-bash: ## Access spark-master container 
 	@docker exec -it spark-master /bin/bash
 
-run-job: ## Submit spark 
-	$(eval CASSANDRA_IP := $(shell docker inspect -f '{{range .NetworkSettings.Networks}}{{.IPAddress}}{{end}}' cassandra-node-1))
-	@echo "Endereço IP do contêiner Cassandra: $(CASSANDRA_IP)"
-	@docker exec -it spark-master spark-submit --packages com.datastax.spark:spark-cassandra-connector_2.12:3.1.0,com.github.jnr:jnr-posix:3.0.52 /opt/spark/app/src/process_data.py $(CASSANDRA_IP)
+run-job: ## Submit spark
+	$(eval SIMULATOR_AWS_IP := $(shell docker inspect -f '{{range .NetworkSettings.Networks}}{{.IPAddress}}{{end}}' simulator-aws))
+	@docker exec -it spark-master spark-submit /opt/spark/app/src/process_orders.py $(SIMULATOR_AWS_IP)
 
 config: ## Add config for containers
-	@mkdir checkpoint input 
-	@chmod 777 checkpoint 
-
-create-table: ## Create table on cassandra
-	@python3 src/create_table.py
-
-	
+	@mkdir checkpoint input output
+	@chmod 777 checkpoint input output
