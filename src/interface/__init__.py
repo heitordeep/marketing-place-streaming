@@ -1,1 +1,1 @@
-from .streaming_etl import StreamingETLInterface
+from .etl import ETLInterface

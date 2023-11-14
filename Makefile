@@ -11,12 +11,24 @@ down: ## Delete containers
 	@docker compose down
 
 exec-bash: ## Access spark-master container 
-	@docker exec -it spark-master /bin/bash
+	@docker exec -it $(container) /bin/bash
 
 run-job: ## Submit spark
-	$(eval SIMULATOR_AWS_IP := $(shell docker inspect -f '{{range .NetworkSettings.Networks}}{{.IPAddress}}{{end}}' simulator-aws))
-	@docker exec -it spark-master spark-submit /opt/spark/app/src/process_orders.py $(SIMULATOR_AWS_IP)
+	@docker exec -it spark-master spark-submit /opt/spark/app/src/process_orders.py
+
+create-bucket: ## Create bucket
+	@docker exec -it simulator-aws sh /tmp/itau-shop/create-bucket.sh
+
+list-bucket: ## List content on bucket
+	@docker exec -it simulator-aws awslocal s3 ls s3://itau-shop/$(path)
+
+move-file-bucket: ## Create bucket
+	@docker exec -it simulator-aws sh /tmp/itau-shop/move-file.sh
 
 config: ## Add config for containers
-	@mkdir checkpoint input output
-	@chmod 777 checkpoint input output
+	@mkdir input checkpoint
+	@chmod 777 input checkpoint
+
+clean: ## Delete directories
+	@rm -rf ./volume/
+	@rm -rf checkpoint/ input/

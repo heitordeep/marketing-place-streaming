@@ -29,10 +29,9 @@ services:
   localstack:
     container_name: simulator-aws
     image: localstack/localstack
-    command: /bin/sh /tmp/itau-shop/create-bucket.sh
     ports:
-      - "4566:4566"            # LocalStack Gateways
-      - "4510-4559:4510-4559"  # external services port range
+      - "4566:4566"
+      - "4510-4559:4510-4559"
     environment:
       - DEBUG=${DEBUG-}
       - DOCKER_HOST=unix:///var/run/docker.sock
@@ -44,5 +43,5 @@ services:
       - "${LOCALSTACK_VOLUME_DIR:-./volume}:/var/lib/localstack"
       - "/var/run/docker.sock:/var/run/docker.sock"
       - ./input/:/tmp/itau-shop/input/
-      - ./output/:/tmp/itau-shop/output/
       - ./create-bucket.sh:/tmp/itau-shop/create-bucket.sh
+      - ./move-file.sh:/tmp/itau-shop/move-file.sh

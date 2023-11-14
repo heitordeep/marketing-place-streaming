@@ -1,0 +1,1 @@
+awslocal s3 mv /tmp/itau-shop/input/ s3://itau-shop/input/ --recursive

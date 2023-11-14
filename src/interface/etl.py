@@ -1,6 +1,6 @@
 from abc import ABC, abstractmethod
 
-class StreamingETLInterface(ABC):
+class ETLInterface(ABC):
 
     @abstractmethod
     def extract(self):
