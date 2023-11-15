@@ -1,5 +1,3 @@
-from pyspark.sql import functions as F
-
 class StreamingETLProcessor:
     def __init__(
         self, 
@@ -33,33 +31,23 @@ class StreamingETLProcessor:
 
     def __parse(self, df, batch_id):
         if not df.isEmpty():
-            df_raw = df.withColumn('dt_processamento', F.current_date())
-            df_raw.write.mode('append').partitionBy(
-                'dt_processamento'
-            ).json(f'{self.bucket_name}/raw/{self.process_name}/')
+            df.write.mode('append').json(f'{self.bucket_name}/raw/{self.process_name}/')
+            self.__transform()
 
-            self.__transform(df)
-
-    def __transform(self, df):
+    def __transform(self):
         df_transformed = self.process(
             spark=self.spark,
             bucket_name=self.bucket_name,
-            raw_data=df,
             path_file=self.output_path,
             process_name=self.process_name
         ).run()
-
-        df_transformed = (
-            df_transformed.
-            withColumn('dt_processamento', F.current_date())
-        )
         
         self.__load(df_transformed)
 
     def __load(self, df):
-        df.write.mode('overwrite').partitionBy(
-            'dt_processamento'
-        ).json(f'{self.bucket_name}/trusted/{self.process_name}/')
+        df.write.mode('overwrite').partitionBy('dt_processamento').parquet(
+            f'{self.bucket_name}/trusted/{self.process_name}/'
+        )
     
     def __write_streaming(self):
         query = (

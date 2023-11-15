@@ -1,124 +1,35 @@
-from interface import ETLInterface
-
+from pyspark.sql import functions as F
 from pyspark.sql.window import Window
 
-from pyspark.sql import functions as F
+from interface import ETLInterface
+
 
 class Order(ETLInterface):
-    def __init__(self, spark, bucket_name, raw_data, path_file, process_name):
+    def __init__(self, spark, bucket_name, path_file, process_name):
         self.spark = spark
         self.bucket_name = bucket_name
         self.path_file = path_file
-        self.raw_data = raw_data
         self.process_name = process_name
 
-    def __check_file_exists(self):
-        path_file = f'{self.bucket_name}/{self.path_file}'
-        sc = self.spark.sparkContext
-        fs = sc._jvm.org.apache.hadoop.fs.FileSystem.get(
-            sc._jvm.java.net.URI.create(path_file),
-            sc._jsc.hadoopConfiguration(),
-        )
-        return fs.exists(
-            sc._jvm.org.apache.hadoop.fs.Path(path_file)
-        )
-
     def extract(self):
-        self.df_orders = self.spark.read.parquet(
-            f'{self.bucket_name}/{self.path_file}/orders/*.parquet'
+        self.raw_orders = self.spark.read.option('multiline', 'true').json(
+            f'{self.bucket_name}/raw/{self.process_name}/*.json'
         )
-        self.df_products = self.spark.read.parquet(
-            f'{self.bucket_name}/{self.path_file}/products/*.parquet'
-        )
-        self.df_sellers = self.spark.read.parquet(
-            f'{self.bucket_name}/{self.path_file}/sellers/*.parquet'
-        )
-        self.df_deliveries = self.spark.read.parquet(
-            f'{self.bucket_name}/{self.path_file}/deliveries/*.parquet'
-        )
-        return self
-
-    def __first_ingestion(self):
-
-        self.orders = self.raw_data.select(
-            "txt_detl_idt_pedi_pgto",
-            "cod_idef_clie",
-            "dat_hor_tran",
-            "stat_pgto",
-            "stat_pedi",
-            "dat_atui",
-        )
-
-        self.products = self.raw_data.selectExpr(
-            "txt_detl_idt_pedi_pgto",
-            "EXPLODE(list_item_pedi) AS list_item_pedi",
-        ).select(
-            "txt_detl_idt_pedi_pgto",
-            "list_item_pedi.nom_item",
-            "list_item_pedi.cod_ofrt_ineo_requ",
-            "list_item_pedi.vlr_oril",
-            "list_item_pedi.vlr_prod",
-            "list_item_pedi.vlr_prod_ofrt_desc",
-            "list_item_pedi.qtd_item_pedi",
-            "list_item_pedi.idt_venr",
-            "list_item_pedi.nom_venr",
-            "list_item_pedi.idt_vrne_venr",
-            "list_item_pedi.cod_vrne_prod",
-        )
-
-        self.sellers = self.raw_data.selectExpr(
-            "EXPLODE(list_item_pedi) AS list_item_pedi",
-        ).select(
-            "list_item_pedi.idt_venr",
-            "list_item_pedi.nom_venr",
-            "list_item_pedi.idt_vrne_venr",
-            "list_item_pedi.cod_vrne_prod",
-        )
-
-        self.deliveries = self.raw_data.select(
-            "txt_detl_idt_pedi_pgto",
-            "list_envo",
-        )
-
-        self.df = self.raw_data
-
         return self
 
     def transform(self):
-        self.orders = self.df_orders.select(
+        self.orders = self.raw_orders.select(
             "txt_detl_idt_pedi_pgto",
             "cod_idef_clie",
             "dat_hor_tran",
             "stat_pgto",
             "stat_pedi",
             "dat_atui"
-        ).union(
-            self.raw_data.select(
-                "txt_detl_idt_pedi_pgto",
-                "cod_idef_clie",
-                "dat_hor_tran",
-                "stat_pgto",
-                "stat_pedi",
-                "dat_atui"   
-            )
-        ).dropDuplicates(["txt_detl_idt_pedi_pgto", "dat_atui"])
+        )
 
-        self.products = self.df_products.select(
+        self.products = self.raw_orders.selectExpr(
             "txt_detl_idt_pedi_pgto",
-            "nom_item",
-            "cod_ofrt_ineo_requ",
-            "vlr_oril",
-            "vlr_prod",
-            "vlr_prod_ofrt_desc",
-            "qtd_item_pedi",
-            "idt_venr",
-            "nom_venr",
-            "idt_vrne_venr",
-            "cod_vrne_prod"
-        ).union(
-            self.raw_data.selectExpr(
-                "txt_detl_idt_pedi_pgto", 
-                "EXPLODE(list_item_pedi) AS list_item_pedi"
+            "EXPLODE(list_item_pedi) AS list_item_pedi"
         ).select(
             "txt_detl_idt_pedi_pgto",
             "list_item_pedi.nom_item",
@@ -131,49 +42,63 @@ class Order(ETLInterface):
             "list_item_pedi.nom_venr",
             "list_item_pedi.idt_vrne_venr",
             "list_item_pedi.cod_vrne_prod"
-        )
         ).distinct()
 
-        self.sellers = self.df_sellers.select(
-            "idt_venr",
-            "nom_venr",
-            "idt_vrne_venr",
-            "cod_vrne_prod",
-        ).union(
-            self.raw_data.selectExpr(
-                "EXPLODE(list_item_pedi) AS list_item_pedi"
+        self.sellers = self.raw_orders.selectExpr(
+            "EXPLODE(list_item_pedi) AS list_item_pedi",
         ).selectExpr(
-                "list_item_pedi.idt_venr",
-                "list_item_pedi.nom_venr",
-                "list_item_pedi.idt_vrne_venr",
-                "list_item_pedi.cod_vrne_prod",
-            )
+            "list_item_pedi.idt_venr",
+            "list_item_pedi.nom_venr",
+            "list_item_pedi.idt_vrne_venr",
+            "list_item_pedi.cod_vrne_prod",
         ).distinct()
         
-        self.deliveries = self.df_deliveries.select(
+        self.shipments = self.raw_orders.select(
             "txt_detl_idt_pedi_pgto",
-            "list_envo"
-        ).union(
-            self.raw_data.select(
-                "txt_detl_idt_pedi_pgto",
-                "list_envo"              
-            )
-        ).distinct()
+            "list_envo",
+            "dat_atui"
+        )
 
         window_spec = (
             Window.partitionBy("txt_detl_idt_pedi_pgto")
             .orderBy(F.desc("dat_atui"))
         )
 
-        df_trusted = self.spark.read.option("multiline", "true").json(
-            f'{self.bucket_name}/trusted/{self.process_name}/*/*.json'
-        )
-        df = self.raw_data.join(
-            df_trusted, on=['txt_detl_idt_pedi_pgto'], how='left'
-        )
+        self.orders = self.orders.withColumn(
+            "version", 
+            F.row_number().over(window_spec)
+        ).filter(F.col("version") == 1).drop("version")
 
-        df = df.withColumn("version", F.row_number().over(window_spec))
-        self.df = df.filter(F.col("version") == 1)
+        self.shipments = self.shipments.withColumn(
+            "version", 
+            F.row_number().over(window_spec)
+        ).filter(F.col("version") == 1).drop("version")
+
+        self.trusted = self.products.alias('products').join(
+            self.sellers.alias('sellers'), on='idt_venr', how='inner'
+        ).join(
+            self.orders.alias('orders'), on='txt_detl_idt_pedi_pgto', how='inner'
+        ).join(
+            self.shipments.alias('shipments'), on='txt_detl_idt_pedi_pgto', how='inner'
+        ).select(
+            'orders.txt_detl_idt_pedi_pgto',
+            'orders.cod_idef_clie',
+            'orders.dat_hor_tran',
+            'products.nom_item',
+            'products.cod_ofrt_ineo_requ',
+            'products.vlr_oril',
+            'products.vlr_prod',
+            'products.vlr_prod_ofrt_desc',
+            'products.qtd_item_pedi',
+            'products.idt_vrne_venr',
+            'products.idt_venr',
+            'products.nom_venr',
+            'products.cod_vrne_prod',
+            'shipments.list_envo',
+            'orders.stat_pgto',
+            'orders.stat_pedi',
+            'orders.dat_atui'
+        ).distinct().withColumn('dt_processamento', F.current_date())
 
         return self
 
@@ -187,14 +112,10 @@ class Order(ETLInterface):
         self.sellers.write.mode('overwrite').parquet(
             f'{self.bucket_name}/{self.path_file}/sellers/'
         )
-        self.deliveries.write.mode('overwrite').parquet(
-            f'{self.bucket_name}/{self.path_file}/deliveries/'
+        self.shipments.write.mode('overwrite').parquet(
+            f'{self.bucket_name}/{self.path_file}/shipments/'
         )
 
     def run(self):
-        if self.__check_file_exists():
-            self.extract().transform().load()
-        else:
-            self.__first_ingestion().load()
-
-        return self.df
+        self.extract().transform().load()
+        return self.trusted

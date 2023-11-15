@@ -1,9 +1,8 @@
 from pyspark.sql import SparkSession
 
+from models import Order
 from process import StreamingETLProcessor
 from schemas import OrderSchema
-from models import Order
-
 
 if __name__ == "__main__":
 
