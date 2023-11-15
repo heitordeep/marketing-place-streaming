@@ -31,7 +31,9 @@ class StreamingETLProcessor:
 
     def __parse(self, df, batch_id):
         if not df.isEmpty():
-            df.write.mode('append').json(f'{self.bucket_name}/raw/{self.process_name}/')
+            df.write.mode('append').json(
+                f'{self.bucket_name}/raw/{self.process_name}/'
+            )
             self.__transform()
 
     def __transform(self):

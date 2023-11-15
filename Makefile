@@ -3,7 +3,6 @@ SHELL=/bin/bash
 help:
 	@awk 'BEGIN {FS = ":.*?## "} /^[a-zA-Z_-]+:.*?## / {printf "\033[36m%-20s\033[0m %s\n", $$1, $$2}' $(MAKEFILE_LIST) | sort
 
-
 up: ## Up spark containers
 	@docker compose up -d
 
@@ -16,14 +15,8 @@ exec-bash: ## Access spark-master container
 run-job: ## Submit spark
 	@docker exec -it spark-master spark-submit /opt/spark/app/src/process_orders.py
 
-create-bucket: ## Create bucket
-	@docker exec -it simulator-aws sh /tmp/itau-shop/create-bucket.sh
-
-list-bucket: ## List content on bucket
-	@docker exec -it simulator-aws awslocal s3 ls s3://itau-shop/$(path)
-
-move-file-bucket: ## Create bucket
-	@docker exec -it simulator-aws sh /tmp/itau-shop/move-file.sh
+bucket-s3: ## Action on the bucket
+	@docker exec -it simulator-aws sh /tmp/itau-shop/bucket_s3.sh $(bucket) $(action) $(path)
 
 config: ## Add config for containers
 	@mkdir input checkpoint

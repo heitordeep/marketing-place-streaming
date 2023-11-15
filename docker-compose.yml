@@ -43,5 +43,4 @@ services:
       - "${LOCALSTACK_VOLUME_DIR:-./volume}:/var/lib/localstack"
       - "/var/run/docker.sock:/var/run/docker.sock"
       - ./input/:/tmp/itau-shop/input/
-      - ./create-bucket.sh:/tmp/itau-shop/create-bucket.sh
-      - ./move-file.sh:/tmp/itau-shop/move-file.sh
+      - ./bucket_s3.sh:/tmp/itau-shop/bucket_s3.sh
